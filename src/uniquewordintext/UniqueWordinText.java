@@ -28,9 +28,14 @@ public class UniqueWordinText {
      */
     public static void main(String[] args) throws IOException {
 
+        long start = System.currentTimeMillis();
+
         Map<String, Long> top10 = wordOccrence(new File("tempest.txt"));
 
-        System.out.println("Top10 ; " + top10.toString());
+        long end = System.currentTimeMillis();
+
+        System.out.println("Top 10 word: " + top10.toString());
+        System.out.println("Time cost  :" + (end - start));
 
     }
 
