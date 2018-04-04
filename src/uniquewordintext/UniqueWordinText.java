@@ -9,19 +9,22 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 
 /**
  *
  * @author YNZ
  */
 public class UniqueWordinText {
+
+    final private static String pattern = "[;:!?.,\\s]+";
 
     /**
      * @param args the command line arguments
@@ -41,11 +44,9 @@ public class UniqueWordinText {
 
     public static Map<String, Long> wordOccrence(File textFile) throws IOException {
         String str = readText2String(textFile);
-        //cut the text into small words
-        String[] words = text2words(str.toLowerCase());
 
-        //all words
-        List<String> wordsList = Arrays.asList(words);
+        List<String> wordsList = Stream.of(str.toLowerCase().split(pattern))
+                .collect(toList());
 
         //all unique words
         List<String> wordsSet = wordsList.parallelStream().distinct()
@@ -54,7 +55,7 @@ public class UniqueWordinText {
         //counting each word
         Map<String, Long> wordNumber = new HashMap<>();
         for (String word : wordsSet) {
-            wordNumber.put(word, countWordParallel(word, wordsList));
+            wordNumber.put(word, wordsList.stream().parallel().filter(w -> w.equals(word)).count());
         }
 
         //all word occurences
@@ -70,15 +71,6 @@ public class UniqueWordinText {
 
         return top10;
 
-    }
-
-    private static String[] text2words(String text) {
-        String pattern = "[;:!?.,\\s]+";
-        return text.split(pattern);
-    }
-
-    private static long countWordParallel(String word, List<String> words) {
-        return words.parallelStream().filter(w -> w.equals(word)).count();
     }
 
     private static String readText2String(File file) throws IOException {
