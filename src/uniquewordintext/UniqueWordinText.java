@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import java.util.stream.Stream;
 
 /**
@@ -49,8 +51,8 @@ public class UniqueWordinText {
                 .collect(toList());
 
         //all unique words
-        List<String> wordsSet = wordsList.parallelStream().distinct()
-                .collect(Collectors.toList());
+        Set<String> wordsSet = wordsList.parallelStream().distinct()
+                .collect(toSet());
 
         //counting each word
         Map<String, Long> wordNumber = new HashMap<>();
