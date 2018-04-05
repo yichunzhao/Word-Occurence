@@ -5,7 +5,6 @@
  */
 package uniquewordintext;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class UniqueWordinTextTest {
     Map<String, Long> top10;
 
     public UniqueWordinTextTest() throws IOException {
-        top10 = wordOccrence(new File("tempest.txt"));
+        top10 = wordOccrence();
     }
 
     @Test

@@ -9,6 +9,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -35,29 +38,29 @@ public class UniqueWordinText {
 
         long start = System.currentTimeMillis();
 
-        Map<String, Long> top10 = wordOccrence(new File("tempest.txt"));
+        Map<String, Long> top10 = wordOccrence();
 
         long end = System.currentTimeMillis();
 
         System.out.println("Top 10 word: " + top10.toString());
         System.out.println("Time cost  :" + (end - start));
-
     }
 
-    public static Map<String, Long> wordOccrence(File textFile) throws IOException {
-        String str = readText2String(textFile);
+    public static Map<String, Long> wordOccrence() throws IOException {
+
+        String str = new String(Files.readAllBytes(Paths.get("tempest.txt")), StandardCharsets.UTF_8);
 
         List<String> wordsList = Stream.of(str.toLowerCase().split(pattern))
                 .collect(toList());
 
         //all unique words
-        Set<String> wordsSet = wordsList.parallelStream().distinct()
+        Set<String> wordsSet = wordsList.stream().distinct()
                 .collect(toSet());
 
         //counting each word
         Map<String, Long> wordNumber = new HashMap<>();
         for (String word : wordsSet) {
-            wordNumber.put(word, wordsList.stream().parallel().filter(w -> w.equals(word)).count());
+            wordNumber.put(word, wordsList.stream().filter(w -> w.equals(word)).count());
         }
 
         //all word occurences
@@ -73,23 +76,6 @@ public class UniqueWordinText {
 
         return top10;
 
-    }
-
-    private static String readText2String(File file) throws IOException {
-        StringBuilder sb = new StringBuilder();
-
-        try (
-                FileReader fr = new FileReader(file);
-                BufferedReader br = new BufferedReader(fr);) {
-
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-                sb.append(" ");
-            }
-        }
-
-        return sb.toString();
     }
 
 }
