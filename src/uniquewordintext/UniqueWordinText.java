@@ -5,9 +5,6 @@
  */
 package uniquewordintext;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -59,9 +56,8 @@ public class UniqueWordinText {
 
         //counting each word
         Map<String, Long> wordNumber = new HashMap<>();
-        for (String word : wordsSet) {
-            wordNumber.put(word, wordsList.stream().filter(w -> w.equals(word)).count());
-        }
+        wordsSet.forEach(word -> wordNumber.put(word, wordsList.stream()
+                .filter(w -> w.equals(word)).count()));
 
         //all word occurences
         Map<String, Long> result = wordNumber.entrySet().stream()
