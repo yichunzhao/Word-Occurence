@@ -63,12 +63,12 @@ public class UniqueWordinText {
         Map<String, Long> result = wordNumber.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                        (o, n) -> o, LinkedHashMap::new));  //o: existing key value; n: new value. 
 
         //top 10 
         Map<String, Long> top10 = result.entrySet().stream().limit(10)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                        (o, n) -> o, LinkedHashMap::new));
 
         return top10;
 
