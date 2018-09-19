@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,14 +35,14 @@ public class UniqueWordinText {
      */
     public static void main(String[] args) throws IOException {
 
-        long start = System.currentTimeMillis();
+        Instant start = Instant.now();
 
         Map<String, Long> top10 = wordOccrence();
 
-        long end = System.currentTimeMillis();
+        Instant end = Instant.now();
 
         System.out.println("Top 10 word: " + top10.toString());
-        System.out.println("Time cost  :" + (end - start));
+        System.out.println("Time cost  :" + Duration.between(start, end).toMillis());
     }
 
     public static Map<String, Long> wordOccrence() throws IOException {
