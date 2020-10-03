@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  *
  * @author YNZ
  */
-public class UniqueWordinText {
+public class UniqueWordInText {
 
     final private static String pattern = "[;:!?.,\\s]+";
 
@@ -37,7 +37,7 @@ public class UniqueWordinText {
 
         Instant start = Instant.now();
 
-        Map<String, Long> top10 = wordOccrence();
+        Map<String, Long> top10 = wordOccurrence();
 
         Instant end = Instant.now();
 
@@ -45,7 +45,7 @@ public class UniqueWordinText {
         System.out.println("Time cost  :" + Duration.between(start, end).toMillis());
     }
 
-    public static Map<String, Long> wordOccrence() throws IOException {
+    public static Map<String, Long> wordOccurrence() throws IOException {
 
         String str = new String(Files.readAllBytes(Paths.get("tempest.txt")), StandardCharsets.UTF_8);
 
@@ -61,7 +61,7 @@ public class UniqueWordinText {
         wordsSet.forEach(word -> wordNumber.put(word, wordsList.stream()
                 .filter(w -> w.equals(word)).count()));
 
-        //all word occurences
+        //all word occurrences
         Map<String, Long> result = wordNumber.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,

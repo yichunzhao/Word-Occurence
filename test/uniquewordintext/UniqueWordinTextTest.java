@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static uniquewordintext.UniqueWordinText.wordOccrence;
+import static uniquewordintext.UniqueWordInText.wordOccurrence;
 
 /**
  *
@@ -20,7 +20,7 @@ public class UniqueWordinTextTest {
     Map<String, Long> top10;
 
     public UniqueWordinTextTest() throws IOException {
-        top10 = wordOccrence();
+        top10 = wordOccurrence();
     }
 
     @Test
