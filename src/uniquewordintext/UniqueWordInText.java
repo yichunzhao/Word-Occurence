@@ -8,8 +8,8 @@ package uniquewordintext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,79 +32,76 @@ public class UniqueWordInText {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, InterruptedException {
-        Instant start = Instant.now();
-
         List<Map.Entry<String, Integer>> top10 = wordOccurrence();
-
-        Instant end = Instant.now();
         System.out.println("Top 10 word: " + top10.toString());
-        System.out.println("Time cost  :" + Duration.between(start, end).toMillis());
 
         printOutAnotherWordOccurrence();
     }
 
     private static void printOutAnotherWordOccurrence() throws IOException {
         System.out.println("++++++++++++++ another method ++++++++++++++++++++");
-        Instant start = Instant.now();
         List<Map.Entry<Integer, String>> top10 = anotherWordOccurrence();
 
         Instant end = Instant.now();
         System.out.println("Top 10 word: " + top10.toString());
-        System.out.println("Time cost  :" + Duration.between(start, end).toMillis());
         System.out.println("++++++++++++++ another method +++++++++++++++++++++");
     }
 
     public static List<Map.Entry<String, Integer>> wordOccurrence() throws IOException {
-
         String str = Files.readString(Paths.get("tempest.txt"));
 
-        List<String> wordsList = Stream.of(str.toLowerCase(Locale.forLanguageTag("en")).split(pattern))
+        List<String> wordsList = Stream.of(str.toLowerCase(Locale.forLanguageTag("en"))
+                .split(pattern))
                 .collect(toList());
+        Map<String, Integer> wordCountMap = countOccurrences(wordsList);
 
-        HashMap<String, Integer> wordCountMap = new HashMap<>();
-        wordsList.forEach(w -> {
-            if (wordCountMap.containsKey(w)) {
-                int wordCount = wordCountMap.get(w);
-                wordCount++;
-                wordCountMap.put(w, wordCount);
+        Comparator<Map.Entry<String, Integer>> comparator = (e1, e2) -> {
+            if (e1.getValue() == e2.getValue()) {
+                return e1.getKey().compareTo(e2.getKey());
+            } else {
+                return e1.getValue().compareTo(e2.getValue());
+            }
+        };
+
+        return wordCountMap.entrySet().stream().sorted(comparator.reversed()).limit(10).collect(toList());
+    }
+
+    //traverse words and count their occurrences.
+    private static Map<String, Integer> countOccurrences(List<String> wordList) {
+        Map<String, Integer> wordCountMap = new HashMap<>();
+
+        wordList.forEach(w -> {
+            Integer c = wordCountMap.get(w);
+            if (c != null) {
+                c++;
+                wordCountMap.put(w, c);
             } else {
                 wordCountMap.put(w, 1);
             }
         });
 
-        return wordCountMap.entrySet().stream().sorted((o1, o2) -> o2.getValue().compareTo(o1.getValue()))
-                .limit(10).collect(toList());
+        return wordCountMap;
     }
 
     public static List<Map.Entry<Integer, String>> anotherWordOccurrence() throws IOException {
 
         String str = Files.readString(Paths.get("tempest.txt"));
 
-        List<String> wordsList = Stream.of(str.toLowerCase(Locale.forLanguageTag("en")).split(pattern))
+        List<String> wordsList = Stream.of(str.toLowerCase(Locale.forLanguageTag("en"))
+                .split(pattern))
                 .collect(toList());
 
-        HashMap<String, Integer> wordCountMap = new HashMap<>();
-        wordsList.forEach(w -> {
-            if (wordCountMap.containsKey(w)) {
-                int wordCount = wordCountMap.get(w);
-                wordCount++;
-                wordCountMap.put(w, wordCount);
-            } else {
-                wordCountMap.put(w, 1);
-            }
-        });
+        Map<String, Integer> wordCountMap = countOccurrences(wordsList);
 
-        NavigableMap<Integer, String> sortedCountWordMap = wordCountMap.entrySet().stream().collect(Collectors.toMap(
-                entry -> entry.getValue(),
-                entry -> entry.getKey(),
-                (o, n) -> n,
-                TreeMap::new)
-        );
+        NavigableMap<Integer, String> sortedCountWordMap = wordCountMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getValue,
+                        Map.Entry::getKey,
+                        (o, n) -> n,
+                        TreeMap::new)
+                );
 
-        return sortedCountWordMap.descendingMap().entrySet()
-                .stream().limit(10).collect(toList());
-
+        return sortedCountWordMap.descendingMap().entrySet().stream().limit(10).collect(toList());
     }
-
 
 }
