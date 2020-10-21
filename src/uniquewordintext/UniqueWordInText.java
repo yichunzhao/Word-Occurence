@@ -8,15 +8,11 @@ package uniquewordintext;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -31,20 +27,9 @@ public class UniqueWordInText {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         List<Map.Entry<String, Integer>> top10 = wordOccurrence();
         System.out.println("Top 10 word: " + top10.toString());
-
-        printOutAnotherWordOccurrence();
-    }
-
-    private static void printOutAnotherWordOccurrence() throws IOException {
-        System.out.println("++++++++++++++ another method ++++++++++++++++++++");
-        List<Map.Entry<Integer, String>> top10 = anotherWordOccurrence();
-
-        Instant end = Instant.now();
-        System.out.println("Top 10 word: " + top10.toString());
-        System.out.println("++++++++++++++ another method +++++++++++++++++++++");
     }
 
     public static List<Map.Entry<String, Integer>> wordOccurrence() throws IOException {
@@ -81,27 +66,6 @@ public class UniqueWordInText {
         });
 
         return wordCountMap;
-    }
-
-    public static List<Map.Entry<Integer, String>> anotherWordOccurrence() throws IOException {
-
-        String str = Files.readString(Paths.get("tempest.txt"));
-
-        List<String> wordsList = Stream.of(str.toLowerCase(Locale.forLanguageTag("en"))
-                .split(pattern))
-                .collect(toList());
-
-        Map<String, Integer> wordCountMap = countOccurrences(wordsList);
-
-        NavigableMap<Integer, String> sortedCountWordMap = wordCountMap.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getValue,
-                        Map.Entry::getKey,
-                        (o, n) -> n,
-                        TreeMap::new)
-                );
-
-        return sortedCountWordMap.descendingMap().entrySet().stream().limit(10).collect(toList());
     }
 
 }
